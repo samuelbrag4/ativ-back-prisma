@@ -2,9 +2,9 @@ import AnimeModel from "../models/animeModel.js";
 
 class AnimeController {
   // GET /api/animes
-  getAllAnimes(req, res) {
+  async getAllAnimes(req, res) {
     try {
-      const animes = AnimeModel.findAll();
+      const animes = await AnimeModel.findAll();
       res.json(animes);
     } catch (error) {
       console.error("Erro ao buscar animes:", error);
@@ -13,16 +13,17 @@ class AnimeController {
   }
 
   // GET /api/animes/:id
-  getAnimeById(req, res) {
+  async getAnimeById(req, res) {
     try {
       const { id } = req.params;
-
-      const anime = AnimeModel.findById(id);
-
+  
+      // Busca o anime pelo ID usando o Prisma
+      const anime = await AnimeModel.findById(id);
+  
       if (!anime) {
         return res.status(404).json({ error: "Anime não encontrado" });
       }
-
+  
       res.json(anime);
     } catch (error) {
       console.error("Erro ao buscar anime:", error);
@@ -31,53 +32,25 @@ class AnimeController {
   }
 
   // POST /api/animes
-  createAnime(req, res) {
+  async createAnime(req, res) {
     try {
+      const data = req.body;
+  
       // Validação básica
-      const {
-        title,
-        description,
-        episodes,
-        releaseYear,
-        studio,
-        genres,
-        rating,
-        imageUrl,
-      } = req.body;
-
-      // Verifica se o título do anime foi fornecido
-
       if (
-        !title ||
-        !description ||
-        !episodes ||
-        !releaseYear ||
-        !studio ||
-        !genres ||
-        !rating ||
-        !imageUrl
+        !data.title ||
+        !data.description ||
+        !data.episodes ||
+        !data.releaseYear ||
+        !data.studio ||
+        !data.genres ||
+        !data.rating ||
+        !data.imageUrl
       ) {
-        return res
-          .status(400)
-          .json({ error: "Todos os campos são obrigatórios" });
+        return res.status(400).json({ error: "Todos os campos são obrigatórios" });
       }
-
-      // Criar o novo anime
-      const newAnime = AnimeModel.create(
-        title,
-        description,
-        episodes,
-        releaseYear,
-        studio,
-        genres,
-        rating,
-        imageUrl
-      );
-
-      if (!newAnime) {
-        return res.status(400).json({ error: "Erro ao criar anime" });
-      }
-
+  
+      const newAnime = await AnimeModel.create(data);
       res.status(201).json(newAnime);
     } catch (error) {
       console.error("Erro ao criar anime:", error);
