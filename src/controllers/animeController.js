@@ -59,37 +59,18 @@ class AnimeController {
   }
 
   // PUT /api/animes/:id
-  updateAnime(req, res) {
+  async updateAnime(req, res) {
     try {
       const { id } = req.params;
-      const {
-        title,
-        description,
-        episodes,
-        releaseYear,
-        studio,
-        genres,
-        rating,
-        imageUrl,
-      } = req.body;
-
+      const updates = req.body;
+  
       // Atualizar o anime
-      const updatedAnime = AnimeModel.update(
-        id,
-        title,
-        description,
-        episodes,
-        releaseYear,
-        studio,
-        genres,
-        rating,
-        imageUrl
-      );
-
+      const updatedAnime = await AnimeModel.update(id, updates);
+  
       if (!updatedAnime) {
         return res.status(404).json({ error: "Anime não encontrado" });
       }
-
+  
       res.json(updatedAnime);
     } catch (error) {
       console.error("Erro ao atualizar anime:", error);
@@ -98,17 +79,17 @@ class AnimeController {
   }
 
   // DELETE /api/animes/:id
-  deleteAnime(req, res) {
+  async deleteAnime(req, res) {
     try {
       const { id } = req.params;
-
+  
       // Remover o anime
-      const result = AnimeModel.delete(id);
-
-      if (!result) {
+      const deletedAnime = await AnimeModel.delete(id);
+  
+      if (!deletedAnime) {
         return res.status(404).json({ error: "Anime não encontrado" });
       }
-
+  
       res.status(204).end(); // Resposta sem conteúdo
     } catch (error) {
       console.error("Erro ao remover anime:", error);
