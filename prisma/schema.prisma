@@ -7,11 +7,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Task {
-  id        Int     @id @default(autoincrement())
-  descricao String
-  concluida Boolean @default(false)
-  criadaEm  DateTime @default(now())
-
-  @@map("tasks")
+model Anime {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  episodes    Int
+  releaseYear Int
+  studio      String
+  genres      String
+  rating      Float
+  imageUrl    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
